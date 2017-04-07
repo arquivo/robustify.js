@@ -253,6 +253,8 @@ function test_404($results, $url) {
     return $results;
 }
 
+openlog('robustify_request', LOG_ODELAY, LOG_LOCAL0);
+
 //main
 if (isset($_GET["url"])) {
 
@@ -268,8 +270,8 @@ if (isset($_GET["url"])) {
             $results = test_404($results, $requestUrl);
         }
     }
-//add log status, define format
 
+    syslog(LOG_INFO, $requestUrl . ' ' . $results[count($results)-1]['statuscode']);
     output_JSON($requestUrl, $results);
 
 } else {

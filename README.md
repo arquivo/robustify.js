@@ -4,6 +4,6 @@ robustify.js is a javascript that attempts to fight [link rot](https://en.wikipe
 
 robustify.js will make any clicked hyperlink test if the linked page is available online. If it is not, it will redirect the user to a web archive, by default using the [Memento Time Travel service](http://timetravel.mementoweb.org/).
 
-This repository is a fork from robustify.js, where is provided a customized version named [robustifyArquivoPT.js](https://github.com/arquivo/robustify.js/blob/master/js/robustifyArquivoPT.js) that use the [Arquivo.pt Robustify Service](http://robustify.arquivo.pt) to verify the status code of a URL and retrieves an archived version of the URL from the Arquivo.pt infrastructure.
+This repository is a fork from robustify.js, where is provided a customized version named [robustifyArquivoPT.js](https://github.com/arquivo/robustify.js/blob/master/js/robustifyArquivoPT.js) that use the [Arquivo.pt Robustify Service](http://robustify.arquivo.pt) to verify the status code of a URL and retrieving an archived version of the URL from the Arquivo.pt infrastructure.
 
 Information about how to use robustify with Arquivo.pt on the [Wiki](https://github.com/arquivo/robustify.js/wiki).

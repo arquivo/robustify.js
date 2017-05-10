@@ -7,3 +7,8 @@ robustify.js will make any clicked hyperlink test if the linked page is availabl
 This repository is a fork from robustify.js, where is provided a customized version named [robustifyArquivoPT.js](https://github.com/arquivo/robustify.js/blob/master/js/robustifyArquivoPT.js) that use the [Arquivo.pt Robustify Service](http://robustify.arquivo.pt) to verify the status code of a URL and retrieving an archived version of the URL from the Arquivo.pt infrastructure.
 
 Information about how to use robustify with Arquivo.pt on the [Wiki](https://github.com/arquivo/robustify.js/wiki).
+
+Websites using the robustify.js with [Arquivo.pt](http://arquivo.pt) infrastrutucture:
+- http://visibilidade.net
+- http://semplanos.com
+- http://cascaisgarage.pt

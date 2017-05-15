@@ -258,7 +258,13 @@ openlog('robustify_request', LOG_ODELAY, LOG_LOCAL0);
 //main
 if (isset($_GET["url"])) {
 
-    $requestUrl = $_GET["url"];
+    $requestUrl     = $_GET["url"];
+    if (isset($_GET["ref"])) {
+        $requestReferer = $_GET["ref"];
+    } else {
+        $requestReferer = "--";
+    }
+
     $results = get_header_array($requestUrl);
 
     if ( isset($_GET["soft404detect"]) && $results[count($results)-1]['statuscode'] == 200) {
@@ -271,7 +277,7 @@ if (isset($_GET["url"])) {
         }
     }
 
-    syslog(LOG_INFO, $requestUrl . ' ' . $results[count($results)-1]['statuscode']);
+    syslog(LOG_INFO, 'Refer: [' . $requestReferer . '] Resource:[' . $requestUrl . '] Status-code:[' . $results[count($results)-1]['statuscode'] . ']' );
     output_JSON($requestUrl, $results);
 
 } else {

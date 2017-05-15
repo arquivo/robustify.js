@@ -86,11 +86,11 @@ var robustify = function (preferences) {
 			//"archive"        : "http://travel.mementoweb.org/memento/{yyyymmddhhmmss}/{url}",
             "archive"        : "http://arquivo.pt/wayback/{yyyymmddhhmmss}/{url}",
             //"statusservice"  : "http://digitopia.nl/services/statuscode.php?soft404detect&url={url}"
-			"statusservice"  : "http://robustify.arquivo.pt/statuscodeArquivoPT.php?url={url}"
+			"statusservice"  : "http://robustify.arquivo.pt/statuscodeArquivoPT.php?url={url}&ref={origin}"
         }
 
         // returns the page's schema.org dateModified or else datePublished
-        var pageModifiedDate = (function () {
+        var pageModifiedDate = (function () { 
             var ret = false;
             var meta = document.getElementsByTagName('meta');
             for (var i = 0; i < meta.length; i++) {
@@ -190,9 +190,9 @@ var robustify = function (preferences) {
     
     // tests if given link is available by calling a JSON service
     // resulting object is presented to callback :
-    var testLink = function (link, versiondate, versionurl, callback) {
+    var testLink = function (link, versiondate, versionurl, callback, currentLocation) {
         var http = new XMLHttpRequest();
-        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)), true);
+        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)).replace( '{origin}', encodeURIComponent(currentLocation) ), true); //JN: add referer to log
         http.onreadystatechange = function() {
             if (this.readyState == this.DONE) {
                 callback(JSON.parse(this.responseText), versiondate, versionurl);
@@ -203,7 +203,8 @@ var robustify = function (preferences) {
     
     // onclick handler attached to be attached to all links:
     var robustLink = function (link, versiondate, versionurl) {
-        testLink(link, versiondate, versionurl, presentLink);
+        var currentLocation = window.location; //JN location to link
+        testLink(link, versiondate, versionurl, presentLink, currentLocation);
         return false;
     }
 

@@ -67,13 +67,15 @@ function get_browser_header() {
  * @param $url
  * @return array $r headers returned by request.
  */
-function get_headers_curl($url, $nobody = true) {
+function get_headers_curl($url, $userAgentClient, $requestReferer, $nobody = true) {
     // we'll mimic a browser
     $header = get_browser_header();
 //    $agent    = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
 //    $referer  = 'http://www.google.com';
-    $agent    = 'RobustifyArquivoPT (+http://robustify.arquivo.pt)';
-    $referer  = 'http://robustify.arquivo.pt';
+//    $agent    = 'RobustifyArquivoPT (+http://robustify.arquivo.pt)';
+//    $referer  = 'http://robustify.arquivo.pt';
+    $agent = $userAgentClient;
+    $referer = $requestReferer;
 	$encoding = 'gzip,deflate';
 
     $ch = curl_init();
@@ -153,7 +155,7 @@ function get_location_header($headerArr) {
  * @param $requestUrl
  * @return array $results
  */
-function get_header_array($requestUrl) {
+function get_header_array($requestUrl , $userAgentClient, $requestReferer) {
     $results = array();
     $counter = 0;
     $location = $requestUrl;
@@ -161,11 +163,11 @@ function get_header_array($requestUrl) {
     while (!empty($location) && ($counter <= MAXFOLLOW)) {
         $counter++;
 
-        $headerArr = get_headers_curl($location);
+        $headerArr = get_headers_curl($location, $userAgentClient, $requestReferer);
         $statuscode = get_statuscode_header($headerArr);
         if ($statuscode == 403 || $statuscode == 405) {
             // try again now using a full GET iso HEAD:
-            $headerArr = get_headers_curl($location, false);
+            $headerArr = get_headers_curl($location, $userAgentClient, $requestReferer, false);
             $statuscode = get_statuscode_header($headerArr);
         }
         $locationHeader = get_location_header($headerArr);
@@ -218,12 +220,12 @@ function get_random_url($base_url) {
  * @param $url example url of server to test
  * @return bool true is status code 404 is return for a random url
  */
-function has_404_capability ($url) {
+function has_404_capability ($url , $userAgentClient, $requestReferer) {
     $random_url = get_random_url ($url);
-    $header_array = get_header_array ($random_url);
+    $header_array = get_header_array ($random_url , $userAgentClient, $requestReferer);
     return (bool)get_statuscode_header ($header_array) == 404;
 }
-
+requestUrl
 /**
  * Returns true if the given url appears to be the home page.
  * @param $url
@@ -265,19 +267,25 @@ if (isset($_GET["url"])) {
         $requestReferer = "--";
     }
 
-    $results = get_header_array($requestUrl);
+    if (isset($_GET["uA"])) {
+        $userAgentClient = $_GET["uA"];
+    } else {
+        $userAgentClient = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36";
+    }
+
+    $results = get_header_array($requestUrl, $userAgentClient , $requestReferer);
 
     if ( isset($_GET["soft404detect"]) && $results[count($results)-1]['statuscode'] == 200) {
         if ( count($results) > 1  && !is_home_page($results[count($results)-2]['location']) ) {
             // suspect, we have been redirected (& don't test the home page):
             $results = test_404($results, $results[count($results)-2]['location']);
-        } elseif (count($results) == 1 && !has_404_capability($requestUrl) && !is_home_page($requestUrl)) {
+        } elseif (count($results) == 1 && !has_404_capability($requestUrl, $userAgentClient, $requestReferer) && !is_home_page($requestUrl)) {
             // no suspect redirects, but it doesn't seem to do 404s at all (& don't test the home page):
             $results = test_404($results, $requestUrl);
         }
     }
 
-    syslog(LOG_INFO, 'Refer: [' . $requestReferer . '] Resource:[' . $requestUrl . '] Status-code:[' . $results[count($results)-1]['statuscode'] . ']' );
+    syslog(LOG_INFO, 'Refer: [' . $requestReferer . '] Resource:[' . $requestUrl . '] Status-code:[' . $results[count($results)-1]['statuscode'] . '] userAgentClient[' . $userAgentClient . ']' );
     output_JSON($requestUrl, $results);
 
 } else {

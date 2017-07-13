@@ -86,7 +86,7 @@ var robustify = function (preferences) {
 			//"archive"        : "http://travel.mementoweb.org/memento/{yyyymmddhhmmss}/{url}",
             "archive"        : "http://arquivo.pt/wayback/{yyyymmddhhmmss}/{url}",
             //"statusservice"  : "http://digitopia.nl/services/statuscode.php?soft404detect&url={url}"
-			"statusservice"  : "http://robustify.arquivo.pt/statuscodeArquivoPT.php?url={url}&ref={origin}"
+			"statusservice"  : "http://robustify.arquivo.pt/statuscodeArquivoPT.php?url={url}&ref={origin}&uA={uA}"
         }
 
         // returns the page's schema.org dateModified or else datePublished
@@ -190,9 +190,9 @@ var robustify = function (preferences) {
     
     // tests if given link is available by calling a JSON service
     // resulting object is presented to callback :
-    var testLink = function (link, versiondate, versionurl, callback, currentLocation) {
-        var http = new XMLHttpRequest();
-        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)).replace( '{origin}', encodeURIComponent(currentLocation) ), true); //JN: add referer to log
+    var testLink = function (link, versiondate, versionurl, callback, currentLocation, userAgentClient) {
+        var http = new XMLHttpRequest(); 
+        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)).replace( '{origin}', encodeURIComponent(currentLocation) ).replace( '{uA}' , encodeURIComponent(userAgentClient) ), true); //JN: add referer to log
         http.onreadystatechange = function() {
             if (this.readyState == this.DONE) {
                 callback(JSON.parse(this.responseText), versiondate, versionurl);
@@ -204,7 +204,8 @@ var robustify = function (preferences) {
     // onclick handler attached to be attached to all links:
     var robustLink = function (link, versiondate, versionurl) {
         var currentLocation = window.location; //JN location to link
-        testLink(link, versiondate, versionurl, presentLink, currentLocation);
+        var userAgent = navigator.userAgent;
+        testLink(link, versiondate, versionurl, presentLink, currentLocation, userAgent);
         return false;
     }
 

@@ -192,7 +192,7 @@ var robustify = function (preferences) {
     // resulting object is presented to callback :
     var testLink = function (link, versiondate, versionurl, callback, currentLocation, userAgentClient) {
         var http = new XMLHttpRequest(); 
-        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)).replace( '{origin}', encodeURIComponent(currentLocation) ).replace( '{uA}' , encodeURIComponent(userAgentClient) ), true); //JN: add referer to log
+        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)).replace( '{origin}', encodeURIComponent(currentLocation) ).replace( '{uA}' , encodeURIComponent(userAgentClient) ), true); //JN: add referer and userAgent
         http.onreadystatechange = function() {
             if (this.readyState == this.DONE) {
                 callback(JSON.parse(this.responseText), versiondate, versionurl);

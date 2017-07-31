@@ -9,6 +9,7 @@ This repository is a fork from robustify.js, where is provided a customized vers
 Information about how to use robustify with Arquivo.pt on the [Wiki](https://github.com/arquivo/robustify.js/wiki).
 
 Websites using the robustify.js with [Arquivo.pt](http://arquivo.pt) infrastrutucture:
+- http://sobre.arquivo.pt
 - http://visibilidade.net
 - http://semplanos.com
 - http://cascaisgarage.pt

@@ -80,13 +80,12 @@ var robustify = function (preferences) {
 
     // settings, is used as a 'global' in the scope of Robustify:
     var settings = (function(preferences) {
-
         var settings = { 
             "dfltVersiondate": false, // to be overwritten later
-			//"archive"        : "http://travel.mementoweb.org/memento/{yyyymmddhhmmss}/{url}",
+            //"archive"        : "http://travel.mementoweb.org/memento/{yyyymmddhhmmss}/{url}",
             "archive"        : "http://arquivo.pt/wayback/{yyyymmddhhmmss}/{url}",
             //"statusservice"  : "http://digitopia.nl/services/statuscode.php?soft404detect&url={url}"
-			"statusservice"  : "http://robustify.arquivo.pt/statuscodeArquivoPT.php?url={url}&ref={origin}&uA={uA}"
+            "statusservice"  : "http://p17.arquivo.pt/service/statuscodeArquivoPT.php?url={url}&ref={origin}&uA={uA}"
         }
 
         // returns the page's schema.org dateModified or else datePublished
@@ -167,32 +166,31 @@ var robustify = function (preferences) {
 
     // navigate to appropriate page, alert user, ask for input if required:
     var presentLink = function (response, versiondate, versionurl) {
-    
         // returns a resource link as used in web archive:
         function buildArchiveLink(versiondate, url) {            
             var versiondate = versiondate ? versiondate : settings.dfltVersiondate;
             return settings.archive.replace('{url}', url).replace('{yyyymmddhhmmss}', versiondate.replace(/[^0-9]/g, ''));
         }
-    
         if (response.headers[response.headers.length - 1].statuscode == 200) {
-            window.location.href = response.request;
+           window.location.href = response.request;
         } else {
             // href is not available online, link to archive
             if (versionurl) {
                 alert(langStrArr["offlineToVersionurl"].replace('{url}', response.request));
                 window.location.href= versionurl;
             } else {
-                 alert(langStrArr["offlineToVersiondate"].replace('{url}', response.request));
+                alert(langStrArr["offlineToVersiondate"].replace('{url}', response.request));
                 window.location.href= buildArchiveLink(versiondate, response.request);
+                var link = buildArchiveLink(versiondate, response.request);
             }
         }
     }
     
     // tests if given link is available by calling a JSON service
     // resulting object is presented to callback :
-    var testLink = function (link, versiondate, versionurl, callback, currentLocation, userAgentClient) {
-        var http = new XMLHttpRequest(); 
-        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)).replace( '{origin}', encodeURIComponent(currentLocation) ).replace( '{uA}' , encodeURIComponent(userAgentClient) ), true); //JN: add referer and userAgent
+    var testLink = function (link, versiondate, versionurl, callback, currentLocation, uAClient) {
+        var http = new XMLHttpRequest();
+        http.open('GET', settings.statusservice.replace('{url}', encodeURIComponent(link)).replace( '{origin}', encodeURIComponent(currentLocation) ).replace( '{uA}' , uAClient ), true); //JN: added referer and user-Agent
         http.onreadystatechange = function() {
             if (this.readyState == this.DONE) {
                 callback(JSON.parse(this.responseText), versiondate, versionurl);
@@ -203,9 +201,9 @@ var robustify = function (preferences) {
     
     // onclick handler attached to be attached to all links:
     var robustLink = function (link, versiondate, versionurl) {
-        var currentLocation = window.location; //JN location to link
-        var userAgent = navigator.userAgent;
-        testLink(link, versiondate, versionurl, presentLink, currentLocation, userAgent);
+        var currentLocation = window.location; //JN get location to link
+        var uAClient = navigator.userAgent; //JN get client user agent
+        testLink(link, versiondate, versionurl, presentLink, currentLocation, uAClient);
         return false;
     }
 

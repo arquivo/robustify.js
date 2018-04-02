@@ -141,8 +141,8 @@ var robustify = function (preferences) {
         // add missing languages as desired...:
         var langStrTable = {
             "en": { 
-                "offlineToVersionurl" : "Page not found\n\nYou will be redirected to a copy preserved by Arquivo.pt.\n", 
-                "offlineToVersiondate": "Page not found\n\nYou will be redirected to Arquivo.pt where you may find a preserved version of this page.\n"
+                "offlineToVersionurl" : "Page not found\n\nSearch in Arquivo.pt?\n", 
+                "offlineToVersiondate": "Page not found\n\nSearch in Arquivo.pt?\n"
             },
             "nl": {
                 "offlineToVersionurl" : "Aangepaste verwijzing\n\nDe gevraagde pagina {url} is niet beschikbaar.\nU wordt doorgestuurd naar een gearchiveerde versie.",
@@ -150,8 +150,9 @@ var robustify = function (preferences) {
             },
             //work in progress
             "pt": {
-                "offlineToVersionurl" : "P\u00E1gina n\u00E3o encontrada\n\nSer\u00E1 redirecionado para uma c\u00F3pia preservada pelo Arquivo.pt.\n",
-                "offlineToVersiondate": "P\u00E1gina n\u00E3o encontrada\n\nSer\u00E1 redirecionado para o Arquivo.pt onde poder\u00E1 encontrar uma vers\u00E3o preservada desta p\u00E1gina.\n"
+                "offlineToVersionurl" : "P\u00E1gina n\u00E3o encontrada\n\nPesquisar no Arquivo.pt?\n",
+                "offlineToVersiondate": "P\u00E1gina n\u00E3o encontrada\n\nPesquisar no Arquivo.pt?\n"
+            //\u00E1 redirecionado para o Arquivo.pt onde poder\u00E1 encontrar uma vers\u00E3o preservada desta p\u00E1gina.
             }
         } 
         var languages = [];
@@ -176,12 +177,17 @@ var robustify = function (preferences) {
         } else {
             // href is not available online, link to archive
             if (versionurl) {
-                alert(langStrArr["offlineToVersionurl"].replace('{url}', response.request));
-                window.location.href= versionurl;
+                //alert(langStrArr["offlineToVersionurl"].replace('{url}', response.request));
+                result = window.confirm( langStrArr["offlineToVersionurl"].replace('{url}', response.request) );
+                if( result ) {
+                    window.location.href= versionurl;    
+                }
             } else {
-                alert(langStrArr["offlineToVersiondate"].replace('{url}', response.request));
-                window.location.href= buildArchiveLink(versiondate, response.request);
-                var link = buildArchiveLink(versiondate, response.request);
+                //alert(langStrArr["offlineToVersiondate"].replace('{url}', response.request));
+                result = window.confirm( langStrArr["offlineToVersiondate"].replace('{url}', response.request) );
+                if( result ) {
+                    window.location.href= buildArchiveLink(versiondate, response.request);    
+                }
             }
         }
     }

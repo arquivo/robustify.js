@@ -172,7 +172,7 @@ var robustify = function (preferences) {
             var versiondate = versiondate ? versiondate : settings.dfltVersiondate;
             return settings.archive.replace('{url}', url).replace('{yyyymmddhhmmss}', versiondate.replace(/[^0-9]/g, ''));
         }
-        if (response.headers[response.headers.length - 1].statuscode == 200) {
+        if (response.headers[response.headers.length - 1].statuscode == 200 || response.headers[response.headers.length - 1].statuscode == 0) {
            window.location.href = response.request;
         } else {
             // href is not available online, link to archive

@@ -85,7 +85,7 @@ var robustify = function (preferences) {
             //"archive"        : "http://travel.mementoweb.org/memento/{yyyymmddhhmmss}/{url}",
             "archive"        : "http://arquivo.pt/wayback/{yyyymmddhhmmss}/{url}",
             //"statusservice"  : "http://digitopia.nl/services/statuscode.php?soft404detect&url={url}"
-            "statusservice"  : "http://robustify.arquivo.pt/statuscodeArquivoPT.php?url={url}&ref={origin}&uA={uA}"
+            "statusservice"  : "https://robustify.arquivo.pt/statuscodeArquivoPT.php?url={url}&ref={origin}&uA={uA}"
         }
 
         // returns the page's schema.org dateModified or else datePublished

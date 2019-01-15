@@ -154,7 +154,7 @@ function get_header_array($requestUrl, $uA, $ref) {
         $counter++;
         $headerArr = get_headers_curl($location, $uA, $ref);
         $statuscode = get_statuscode_header($headerArr);
-        if ($statuscode == 403 || $statuscode == 405) {
+        if ($statuscode == 403 || $statuscode == 405 || $statuscode == 404) {
             // try again now using a full GET iso HEAD:
             $headerArr = get_headers_curl($location, $uA, $ref, false);
             $statuscode = get_statuscode_header($headerArr);
